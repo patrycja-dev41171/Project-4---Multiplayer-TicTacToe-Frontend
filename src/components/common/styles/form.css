@@ -1,3 +1,7 @@
+.disable {
+    display: none;
+}
+
 .form {
     width: 80%;
     max-width: 400px;
@@ -11,6 +15,11 @@
     padding: 10px;
     font-size: 14px;
     font-weight: 600;
+}
+
+.form__p--error {
+    margin: 0 auto;
+    color: #ce1818;
 }
 
 @media screen and (min-height: 1024px) and (min-width: 768px) and (orientation: portrait) {
