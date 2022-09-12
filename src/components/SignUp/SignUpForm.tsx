@@ -5,9 +5,12 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import { signUpSchema } from "../../validations/signUpSchema";
 import { StyledTextField } from "../common/StyledTextField";
+import {apiUrl} from "../../utils/config/api";
+
 import { User } from "types";
 
-import '../common/styles/form.css';
+import "../common/styles/form.css";
+import {useNavigate} from "react-router-dom";
 
 interface InputNumber {
   password: string;
@@ -23,6 +26,10 @@ export const SignUpForm = () => {
     showPassword: false,
     showConfirmPassword: false,
   });
+  const [error, setError] = useState("");
+  const [disable, setDisable] = useState(true);
+
+  let navigate = useNavigate();
 
   const {
     register,
@@ -54,7 +61,27 @@ export const SignUpForm = () => {
   };
 
   const onSubmit: SubmitHandler<User> = async (data) => {
-    console.log(data);
+    try {
+      const res = await fetch(`${apiUrl}/sign-up`, {
+        method: "POST",
+        credentials: 'include',
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      if(result.message) {
+        setError(result.message);
+        setDisable(!disable)
+      }
+      if(result.status === 200){
+        navigate('/login')
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -151,6 +178,7 @@ export const SignUpForm = () => {
             ),
           }}
         />
+        <p className={`${disable ? "disable" : "form__p form__p--error"}`}>{error}</p>
         <Button
           type="submit"
           variant="contained"
