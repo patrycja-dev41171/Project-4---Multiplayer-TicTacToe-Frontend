@@ -7,6 +7,8 @@ import { signUpSchema } from "../../validations/signUpSchema";
 import { StyledTextField } from "../common/StyledTextField";
 import { User } from "types";
 
+import '../common/styles/form.css';
+
 interface InputNumber {
   password: string;
   confirmPassword: string;
