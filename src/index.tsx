@@ -5,6 +5,7 @@ import { App } from "./App";
 import { ThemeProvider } from "@mui/material/styles";
 import {mainTheme} from "./utils/materialUITheme";
 import {BrowserRouter} from "react-router-dom";
+import './utils/interceptors/axios';
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
