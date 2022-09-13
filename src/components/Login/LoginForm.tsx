@@ -6,11 +6,10 @@ import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import { StyledTextField } from "../common/StyledTextField";
 import { loginSchema } from "../../validations/loginSchema";
 import { Login } from "types";
-
-import "../common/styles/form.css";
 import { apiUrl } from "../../utils/config/api";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "../common/styles/form.css";
 
 interface InputNumber {
   password: string;
