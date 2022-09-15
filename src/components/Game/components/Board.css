@@ -1,0 +1,176 @@
+.board__layout {
+    overflow-x: hidden;
+}
+.board__h1 {
+  font-size: 24px;
+  margin: 10px;
+}
+
+.board__h2 {
+  font-size: 20px;
+  margin: 10px;
+}
+
+.board__info {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 20px 10px;
+}
+
+.board__info p {
+  margin: 0;
+  padding: 8px;
+  font-weight: 600;
+}
+
+.board {
+  width: 250px;
+  height: 250px;
+    margin: auto;
+  border-radius: 5px;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.board__element {
+  box-sizing: border-box;
+  flex-basis: calc(100% / 3);
+  height: calc(100% / 3);
+  overflow: hidden;
+  border-radius: 5px;
+  border: var(--color4) solid 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.board__element:hover {
+  background-color: var(--color1);
+}
+
+.board__element > p {
+  margin: 0;
+}
+
+.board__turn {
+  font-weight: 500;
+  margin: 10px auto 0;
+  font-size: 18px;
+}
+
+.board__btns{
+    display: flex;
+    flex-direction: column;
+}
+
+.board__layout button {
+    width: 180px;
+    margin: 20px auto 0;
+}
+
+@media screen and (min-height: 1024px) and (min-width: 768px) and (orientation: portrait) {
+    .board__h1 {
+        font-size: 28px;
+    }
+
+    .board__h2 {
+        font-size: 24px;
+    }
+
+    .board__info {
+        padding: 10px 30px 30px;
+    }
+
+    .board__info p {
+        font-size: 20px;
+    }
+
+    .board {
+        width: 300px;
+        height: 300px;
+    }
+
+
+
+    .board__turn {
+        margin: 30px auto 20px;
+        font-size: 22px;
+    }
+}
+
+@media screen and (min-height: 1366px) and (min-width: 1024px) and (orientation: portrait) {
+    .board__h1 {
+        font-size: 34px;
+    }
+
+    .board__h2 {
+        font-size: 30px;
+    }
+
+    .board__info {
+        padding: 20px 40px 40px;
+    }
+
+    .board__info p {
+        font-size: 26px;
+    }
+
+    .board {
+        width: 400px;
+        height: 400px;
+    }
+
+    .board__element {
+        font-size: 36px;
+    }
+
+    .board__turn {
+        margin: 40px auto 30px;
+        font-size: 28px;
+    }
+
+    .board__layout button{
+        width: 240px;
+        font-size: 22px;
+        margin: 30px auto 0;
+    }
+}
+
+@media screen and (min-height: 750px) and (min-width: 1024px) and (orientation: landscape) {
+
+
+    .board__h1 {
+        font-size: 26px;
+    }
+
+    .board__h2 {
+        font-size: 22px;
+    }
+
+    .board__info {
+        padding: 10px 30px 30px;
+    }
+
+    .board__info p {
+        font-size: 16px;
+    }
+
+    .board {
+        width: 280px;
+        height: 280px;
+    }
+
+    .board__turn {
+        margin: 20px auto 10px;
+        font-size: 22px;
+    }
+}
+
+@media screen and (min-height: 1024px) and (min-width: 1336px) and (orientation: landscape) {
+    .board__layout {
+        margin: 30px auto auto;
+    }
+}
