@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import "./Board.css";
 import { winningPatterns } from "../../../utils/game/winningPaterns";
+import { Button } from "@mui/material";
+import "./Board.css";
 
 export const Board = () => {
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", "", ""]);
@@ -12,7 +13,7 @@ export const Board = () => {
   const chooseSquare = async (square: number) => {
     if (player === turn && board[square] === "") {
       setTurn(player === "X" ? "O" : "X");
-      setPlayer(player === "X" ? "O" : "X")
+      setPlayer(player === "X" ? "O" : "X");
       const values = board;
       values[square] = player;
       await setBoard(values);
@@ -23,17 +24,17 @@ export const Board = () => {
   const checkWin = () => {
     winningPatterns.forEach((currPattern) => {
       const firstPlayer = board[currPattern[0]];
-      if (firstPlayer == "") return;
+      if (firstPlayer === "") return;
       let foundWinningPattern = true;
       currPattern.forEach((idx) => {
-        if (board[idx] != firstPlayer) {
+        if (board[idx] !== firstPlayer) {
           foundWinningPattern = false;
         }
       });
 
       if (foundWinningPattern) {
         setResult({ winner: board[currPattern[0]], state: "won" });
-        console.log(result.winner)
+        console.log(result.winner);
       }
     });
   };
@@ -53,37 +54,56 @@ export const Board = () => {
 
   useEffect(() => {
     checkWin();
-    checkIfTie()
+    checkIfTie();
   }, [render]);
 
   return (
-    <div className="board">
-      <div id="0" className="board__element" onClick={() => chooseSquare(0)}>
-        <p>{board[0]}</p>
+    <div className="board__layout">
+      <h1 className="board__h1">TIC TAC TOE</h1>
+      <h2 className="board__h2">Game status: in progress.</h2>
+      <div className="board__info">
+        <p>Opponent: </p>
+        <p>POINTS</p>
+        <p>Player1: 200</p>
+        <p>Player2: 140</p>
       </div>
-      <div id="1" className="board__element" onClick={() => chooseSquare(1)}>
-        {board[1]}
+      <div className="board">
+        <div id="0" className="board__element" onClick={() => chooseSquare(0)}>
+          <p>{board[0]}</p>
+        </div>
+        <div id="1" className="board__element" onClick={() => chooseSquare(1)}>
+          {board[1]}
+        </div>
+        <div id="2" className="board__element" onClick={() => chooseSquare(2)}>
+          {board[2]}
+        </div>
+        <div id="3" className="board__element" onClick={() => chooseSquare(3)}>
+          {board[3]}
+        </div>
+        <div id="4" className="board__element" onClick={() => chooseSquare(4)}>
+          {board[4]}
+        </div>
+        <div id="5" className="board__element" onClick={() => chooseSquare(5)}>
+          {board[5]}
+        </div>
+        <div id="6" className="board__element" onClick={() => chooseSquare(6)}>
+          {board[6]}
+        </div>
+        <div id="7" className="board__element" onClick={() => chooseSquare(7)}>
+          {board[7]}
+        </div>
+        <div id="8" className="board__element" onClick={() => chooseSquare(8)}>
+          {board[8]}
+        </div>
       </div>
-      <div id="2" className="board__element" onClick={() => chooseSquare(2)}>
-        {board[2]}
-      </div>
-      <div id="3" className="board__element" onClick={() => chooseSquare(3)}>
-        {board[3]}
-      </div>
-      <div id="4" className="board__element" onClick={() => chooseSquare(4)}>
-        {board[4]}
-      </div>
-      <div id="5" className="board__element" onClick={() => chooseSquare(5)}>
-        {board[5]}
-      </div>
-      <div id="6" className="board__element" onClick={() => chooseSquare(6)}>
-        {board[6]}
-      </div>
-      <div id="7" className="board__element" onClick={() => chooseSquare(7)}>
-        {board[7]}
-      </div>
-      <div id="8" className="board__element" onClick={() => chooseSquare(8)}>
-        {board[8]}
+      <p className="board__turn">Your move!</p>
+      <div className="board__btns">
+        <Button disabled type="submit" variant="contained" size="medium">
+          Save the result
+        </Button>
+        <Button type="submit" variant="contained" size="medium">
+          End the game
+        </Button>
       </div>
     </div>
   );
