@@ -17,7 +17,7 @@ export const HomeBtns = () => {
       </Button>
       <h1>PLAY</h1>
       <Button
-        onClick={() => navigate("/login")}
+        onClick={() => navigate("/join-game-friend")}
         type="button"
         variant="contained"
         size="medium"

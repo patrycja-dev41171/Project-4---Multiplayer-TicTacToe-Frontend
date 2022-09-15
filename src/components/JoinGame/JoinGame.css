@@ -1,0 +1,20 @@
+.joinGame__form {
+    margin-top: 15px;
+    width: 60vw;
+}
+
+@media screen and (min-height: 1024px) and (min-width: 768px) and (orientation: portrait) {
+    .joinGame__form {
+        margin-top: 15px;
+        width: 40vw;
+        max-width: 400px;
+    }
+}
+
+@media screen and (min-height: 750px) and (min-width: 1024px) and (orientation: landscape) {
+    .joinGame__form {
+        margin-top: 15px;
+        width: 40vw;
+        max-width: 400px;
+    }
+}
