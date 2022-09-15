@@ -1,0 +1,31 @@
+.board{
+    width: 250px;
+    height: 250px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+.board__element {
+    box-sizing: border-box;
+    flex-basis: calc(100% / 3);
+    height: calc(100% / 3);
+    overflow: hidden;
+    border-radius: 5px;
+    border: var(--color4) solid 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 24px;
+}
+
+.board__element:hover {
+    background-color: var(--color1);
+}
+
+.board__element > p {
+margin: 0;
+}
