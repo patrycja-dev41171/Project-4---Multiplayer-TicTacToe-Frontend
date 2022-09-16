@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, IconButton, InputAdornment, Link } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -10,13 +10,30 @@ import { apiUrl } from "../../utils/config/api";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../common/styles/form.css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setAccessToken,
+  setExpirationTime,
+  setUser_id,
+  setUsername,
+} from "../../redux-toolkit/features/user/user-slice";
+import jwtDecode from "jwt-decode";
+import { StoreState } from "../../redux-toolkit/store";
 
 interface InputNumber {
   password: string;
   showPassword: boolean;
 }
 
+interface AccessToken {
+  name: string;
+  exp: number;
+}
+
 export const LoginForm = () => {
+  const { user_id, accessToken, expirationTime, username } = useSelector(
+    (store: StoreState) => store.user
+  );
   const [values, setValues] = useState<InputNumber>({
     password: "",
     showPassword: false,
@@ -25,6 +42,9 @@ export const LoginForm = () => {
   const [disable, setDisable] = useState(true);
 
   let navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {}, [error]);
 
   const {
     register,
@@ -59,16 +79,18 @@ export const LoginForm = () => {
       },
       withCredentials: true,
       responseType: "json",
-    })
-      .catch(function (error) {
-        setError(error.response.data.message);
-        setDisable(!disable);
-      })
-      .then(function (response: any) {
-        axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${response.data.accessToken}`;
-        if (response.data) navigate("/home");
+    }).then(async function (response:any) {
+        if (response.name === 'AxiosError') {
+          setError(response.response.data.message);
+          setDisable(!disable);
+        } else {
+          const decoded = await jwtDecode<AccessToken>(response.data.accessToken);
+          dispatch(setUser_id(response.data.user_id));
+          dispatch(setAccessToken(response.data.accessToken));
+          dispatch(setExpirationTime(decoded.exp));
+          dispatch(setUsername(response.data.username));
+          if (user_id !== '') navigate("/home");
+        }
       });
   };
 
@@ -112,7 +134,7 @@ export const LoginForm = () => {
             ),
           }}
         />
-        <p className={`${disable ? "disable" : "form__p form__p--error"}`}>
+        <p className={`${error === "" ? "disable" : "form__p form__p--error"}`}>
           {error}
         </p>
         <Button
