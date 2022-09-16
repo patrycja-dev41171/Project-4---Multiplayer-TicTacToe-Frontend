@@ -12,7 +12,7 @@ interface User {
 }
 
 const initialState: User = {
-  user_id: "140554e1-5a41-4767-9ba0-975d85a42df7",
+  user_id: "",
   username: "",
   points: 0,
   games: 0,
