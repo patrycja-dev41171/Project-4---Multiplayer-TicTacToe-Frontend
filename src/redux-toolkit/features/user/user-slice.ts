@@ -5,6 +5,7 @@ interface User {
   username: string;
   points: number;
   games: number;
+  room_id: string;
   accessToken: string;
   expirationTime: number;
   scoreboard: [];
@@ -15,6 +16,7 @@ const initialState: User = {
   username: "",
   points: 0,
   games: 0,
+  room_id: "",
   accessToken: "",
   expirationTime: 0,
   scoreboard: [],
@@ -34,6 +36,10 @@ interface SetPoints {
 
 interface SetGames {
   payload: number;
+}
+
+interface SetRoom_id {
+  payload: string;
 }
 
 interface SetAccessToken {
@@ -64,6 +70,9 @@ export const userSlice = createSlice({
     setGames: (state, action: SetGames) => {
       state.games = action.payload;
     },
+    setRoom_id: (state, action: SetRoom_id) => {
+      state.room_id = action.payload;
+    },
     setAccessToken: (state, action: SetAccessToken) => {
       state.accessToken = action.payload;
     },
@@ -81,6 +90,7 @@ export const {
   setUsername,
   setAccessToken,
   setExpirationTime,
+  setRoom_id,
   setGames,
   setPoints,
   setScoreboard,

@@ -1,14 +1,24 @@
-import React, { useState } from "react";
-import { Button, IconButton, InputAdornment, Link } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
+import jwtDecode from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
+import axios from "axios";
+
+import { Button, IconButton, InputAdornment, Link } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { StyledTextField } from "../common/StyledTextField";
 import { loginSchema } from "../../validations/loginSchema";
-import { Login } from "types";
 import { apiUrl } from "../../utils/config/api";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useDispatch } from "react-redux";
+import {
+  setAccessToken,
+  setExpirationTime,
+  setUser_id,
+  setUsername,
+} from "../../redux-toolkit/features/user/user-slice";
+
+import { Login } from "types";
 import "../common/styles/form.css";
 
 interface InputNumber {
@@ -16,15 +26,23 @@ interface InputNumber {
   showPassword: boolean;
 }
 
+interface AccessToken {
+  name: string;
+  exp: number;
+}
+
 export const LoginForm = () => {
+  const [error, setError] = useState("");
+  const [disable, setDisable] = useState(true);
   const [values, setValues] = useState<InputNumber>({
     password: "",
     showPassword: false,
   });
-  const [error, setError] = useState("");
-  const [disable, setDisable] = useState(true);
 
   let navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {}, [error]);
 
   const {
     register,
@@ -59,17 +77,19 @@ export const LoginForm = () => {
       },
       withCredentials: true,
       responseType: "json",
-    })
-      .catch(function (error) {
-        setError(error.response.data.message);
+    }).then(async function (response: any) {
+      if (response.name === "AxiosError") {
+        setError(response.response.data.message);
         setDisable(!disable);
-      })
-      .then(function (response: any) {
-        axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${response.data.accessToken}`;
-        if (response.data) navigate("/home");
-      });
+      } else {
+        const decoded = await jwtDecode<AccessToken>(response.data.accessToken);
+        dispatch(setUser_id(response.data.user_id));
+        dispatch(setAccessToken(response.data.accessToken));
+        dispatch(setExpirationTime(decoded.exp));
+        dispatch(setUsername(response.data.username));
+        navigate("/home");
+      }
+    });
   };
 
   return (
@@ -112,7 +132,7 @@ export const LoginForm = () => {
             ),
           }}
         />
-        <p className={`${disable ? "disable" : "form__p form__p--error"}`}>
+        <p className={`${error === "" ? "disable" : "form__p form__p--error"}`}>
           {error}
         </p>
         <Button

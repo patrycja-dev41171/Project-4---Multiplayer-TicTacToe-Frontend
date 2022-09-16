@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { App } from "./App";
+import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import { mainTheme } from "./utils/materialUITheme";
-import { BrowserRouter } from "react-router-dom";
 import { Provider } from 'react-redux';
 import { store } from './redux-toolkit/store';
-import "./utils/interceptors/axios";
+import "./socket-io/socket";
+import { App } from "./App";
 import "./index.css";
 
 const root = ReactDOM.createRoot(

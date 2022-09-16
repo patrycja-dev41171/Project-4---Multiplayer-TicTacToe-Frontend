@@ -1,0 +1,35 @@
+.waitingForOpponent__h3{
+    margin: 0;
+    font-size: 16px;
+    padding: 10px;
+}
+
+.waitingForOpponent__h3:nth-child(3){
+    font-size: 13px;
+    padding: 10px 0;
+
+}
+
+.waitingForOpponent__progress{
+    margin: 30px auto 40px;
+}
+
+@media screen and (min-height: 1024px) and (min-width: 768px) and (orientation: portrait) {
+    .waitingForOpponent__h3{
+        font-size: 20px;
+    }
+
+    .waitingForOpponent__h3:nth-child(3){
+        font-size: 18px;
+    }
+}
+
+@media screen and (min-height: 750px) and (min-width: 1024px) and (orientation: landscape) {
+    .waitingForOpponent__h3{
+        font-size: 20px;
+    }
+
+    .waitingForOpponent__h3:nth-child(3){
+        font-size: 18px;
+    }
+}
