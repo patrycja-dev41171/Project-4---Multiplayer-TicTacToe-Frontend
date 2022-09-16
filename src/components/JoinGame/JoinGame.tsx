@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import { codeRoomSchema } from "../../validations/codeRoomSchema";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { StoreState } from "../../redux-toolkit/store";
 import { apiUrl } from "../../utils/config/api";
 import { socket } from "../../socket-io/socket";
@@ -19,8 +19,9 @@ type Code = {
 };
 
 export const JoinGame = () => {
-  const { user_id } = useSelector((store: StoreState) => store.user);
-
+  const { user_id, accessToken } = useSelector(
+    (store: StoreState) => store.user
+  );
   const [error, setError] = useState("");
   const [form, setForm] = useState(false);
   const [btn, setBtn] = useState(true);
@@ -45,18 +46,23 @@ export const JoinGame = () => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
       },
       withCredentials: true,
       responseType: "json",
     })
-      .catch(function (error) {
-        setError(error.response.data.message);
-        setDisable(!disable);
+      .then(async function (response: any) {
+        if (response.name === "AxiosError") {
+          setError(response.response.data.message);
+          setDisable(!disable);
+        } else {
+          dispatch(setRoom_id(response.data.room_id));
+          socket.emit("join_room", response.data.room_id);
+          if (response.data) navigate("/join-game-waiting");
+        }
       })
-      .then(function (response: any) {
-        dispatch(setRoom_id(response.data.room_id));
-        socket.emit("join_room", response.data.room_id);
-        if (response.data) navigate("/join-game-waiting");
+      .catch(function (err) {
+        console.log(err);
       });
   };
 
@@ -67,20 +73,21 @@ export const JoinGame = () => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
       },
       data: data,
       withCredentials: true,
       responseType: "json",
-    })
-        .catch(function (error) {
-          setError(error.response.data.message);
-          setDisable(!disable);
-        })
-        .then(function (response: any) {
-          dispatch(setRoom_id(response.data.room_id));
-          socket.emit("join_room", response.data.room_id);
-          if (response.data) navigate("/game");
-        });
+    }).then(async function (response: any) {
+      if (response.name === "AxiosError") {
+        setError(response.response.data.message);
+        setDisable(!disable);
+      } else {
+        dispatch(setRoom_id(response.data.room_id));
+        socket.emit("join_room", response.data.room_id);
+        if (response.data) navigate("/game");
+      }
+    });
   };
 
   return (
