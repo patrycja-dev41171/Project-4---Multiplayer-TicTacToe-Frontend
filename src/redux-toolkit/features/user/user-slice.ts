@@ -82,6 +82,9 @@ export const userSlice = createSlice({
     setScoreboard: (state, action: SetScoreboard) => {
       state.scoreboard = action.payload;
     },
+    setReset:() => {
+      return initialState;
+    }
   },
 });
 
@@ -94,4 +97,5 @@ export const {
   setGames,
   setPoints,
   setScoreboard,
+  setReset
 } = userSlice.actions;
