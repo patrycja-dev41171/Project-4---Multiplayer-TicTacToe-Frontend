@@ -1,24 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Button, IconButton, InputAdornment, Link } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import jwtDecode from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
+import axios from "axios";
+
+import { Button, IconButton, InputAdornment, Link } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { StyledTextField } from "../common/StyledTextField";
 import { loginSchema } from "../../validations/loginSchema";
-import { Login } from "types";
 import { apiUrl } from "../../utils/config/api";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import "../common/styles/form.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   setAccessToken,
   setExpirationTime,
   setUser_id,
   setUsername,
 } from "../../redux-toolkit/features/user/user-slice";
-import jwtDecode from "jwt-decode";
-import { StoreState } from "../../redux-toolkit/store";
+
+import { Login } from "types";
+import "../common/styles/form.css";
 
 interface InputNumber {
   password: string;
@@ -31,15 +32,12 @@ interface AccessToken {
 }
 
 export const LoginForm = () => {
-  const { user_id, accessToken, expirationTime, username } = useSelector(
-    (store: StoreState) => store.user
-  );
+  const [error, setError] = useState("");
+  const [disable, setDisable] = useState(true);
   const [values, setValues] = useState<InputNumber>({
     password: "",
     showPassword: false,
   });
-  const [error, setError] = useState("");
-  const [disable, setDisable] = useState(true);
 
   let navigate = useNavigate();
   const dispatch = useDispatch();
@@ -79,19 +77,19 @@ export const LoginForm = () => {
       },
       withCredentials: true,
       responseType: "json",
-    }).then(async function (response:any) {
-        if (response.name === 'AxiosError') {
-          setError(response.response.data.message);
-          setDisable(!disable);
-        } else {
-          const decoded = await jwtDecode<AccessToken>(response.data.accessToken);
-          dispatch(setUser_id(response.data.user_id));
-          dispatch(setAccessToken(response.data.accessToken));
-          dispatch(setExpirationTime(decoded.exp));
-          dispatch(setUsername(response.data.username));
-          if (user_id !== '') navigate("/home");
-        }
-      });
+    }).then(async function (response: any) {
+      if (response.name === "AxiosError") {
+        setError(response.response.data.message);
+        setDisable(!disable);
+      } else {
+        const decoded = await jwtDecode<AccessToken>(response.data.accessToken);
+        dispatch(setUser_id(response.data.user_id));
+        dispatch(setAccessToken(response.data.accessToken));
+        dispatch(setExpirationTime(decoded.exp));
+        dispatch(setUsername(response.data.username));
+        navigate("/home");
+      }
+    });
   };
 
   return (
