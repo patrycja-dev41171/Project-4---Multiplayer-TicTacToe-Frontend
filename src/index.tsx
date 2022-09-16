@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from 'react-redux';
 import { store } from './redux-toolkit/store';
 import "./utils/interceptors/axios";
+import "./socket-io/socket";
 import "./index.css";
 
 const root = ReactDOM.createRoot(
