@@ -32,6 +32,46 @@ interface AccessToken {
 }
 
 export const App = () => {
+  let refresh = false;
+  const dispatch = useDispatch();
+
+  useRefreshToken();
+
+  axios.interceptors.response.use(
+    (resp) => resp,
+    async (error) => {
+      if (error.response.status === 401 && !refresh) {
+        console.log("refresh");
+        refresh = true;
+        await axios({
+          method: "GET",
+          url: `${apiUrl}/refreshToken`,
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+          responseType: "json",
+        }).then(async function (response: any) {
+          if (response.name === "AxiosError") {
+            console.log(response.response.data.message);
+          } else {
+            const decoded = await jwtDecode<AccessToken>(
+              response.data.accessToken
+            );
+            dispatch(setUser_id(response.data.user_id));
+            dispatch(setAccessToken(response.data.accessToken));
+            dispatch(setExpirationTime(decoded.exp));
+            dispatch(setUsername(response.data.username));
+            return axios(error.config);
+          }
+        });
+      }
+      refresh = false;
+      return error;
+    }
+  );
+
   return (
     <div className="container">
       <Routes>
