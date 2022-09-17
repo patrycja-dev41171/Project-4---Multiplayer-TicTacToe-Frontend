@@ -16,7 +16,7 @@ import { apiUrl } from "../../../utils/config/api";
 import "./HomeHeadaer.css";
 
 export const HomeHeader = () => {
-  const { accessToken, username } = useSelector(
+  const { accessToken, username, points, games, scoreboard_place } = useSelector(
     (store: StoreState) => store.user
   );
   let navigate = useNavigate();
@@ -89,13 +89,13 @@ export const HomeHeader = () => {
       </div>
       <div className="home-layout__header__info">
         <p>
-          Points: <span>155</span>
+          Points: <span>{points}</span>
         </p>
         <p>
-          Number of games: <span>6</span>
+          Number of games: <span>{games}</span>
         </p>
         <p>
-          Ranking place: <span>24</span>
+          Ranking place: <span>{scoreboard_place}</span>
         </p>
       </div>
     </div>

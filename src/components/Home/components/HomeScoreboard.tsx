@@ -1,4 +1,6 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { StoreState } from "../../../redux-toolkit/store";
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import "./HomeScoreboard.css";
@@ -7,7 +9,6 @@ const columns: GridColDef[] = [
   {
     field: "id",
     headerName: "NO",
-    sortable: false,
     disableColumnMenu: true,
     width: 80,
     align: "center",
@@ -34,19 +35,9 @@ const columns: GridColDef[] = [
   },
 ];
 
-const rows = [
-  { id: 1, points: "255", username: "Jon" },
-  { id: 2, points: "210", username: "Cersei" },
-  { id: 3, points: "205", username: "Jaime" },
-  { id: 4, points: "190", username: "Arya" },
-  { id: 5, points: "185", username: "Daenerys" },
-  { id: 6, points: "180", username: "misiaczek" },
-  { id: 7, points: "160", username: "Ferrara" },
-  { id: 8, points: "140", username: "Rossini" },
-  { id: 9, points: "125", username: "Harvey" },
-];
-
 export const HomeScoreboard = () => {
+  const { scoreboard } = useSelector((store: StoreState) => store.user);
+
   return (
     <div className="home-layout__scoreboard">
       <h1>Scoreboard</h1>
@@ -60,7 +51,7 @@ export const HomeScoreboard = () => {
         }}
       >
         <DataGrid
-          rows={rows}
+          rows={scoreboard}
           columns={columns}
           pageSize={10}
           rowsPerPageOptions={[10]}
