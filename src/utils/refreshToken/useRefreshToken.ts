@@ -1,16 +1,15 @@
-import { apiUrl } from "../config/api";
-import jwtDecode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { StoreState } from "../../redux-toolkit/store";
+import jwtDecode from "jwt-decode";
 import axios from "axios";
+import { StoreState } from "../../redux-toolkit/store";
 import {
   setAccessToken,
   setExpirationTime,
   setUser_id,
   setUsername,
 } from "../../redux-toolkit/features/user/user-slice";
-import { useNavigate } from "react-router-dom";
+import { apiUrl } from "../config/api";
 
 interface AccessToken {
   name: string;
@@ -19,7 +18,6 @@ interface AccessToken {
 
 export const useRefreshToken = async () => {
   const dispatch = useDispatch();
-  let navigate = useNavigate();
   const { accessToken, expirationTime } = useSelector(
     (store: StoreState) => store.user
   );
@@ -39,13 +37,12 @@ export const useRefreshToken = async () => {
       });
       if (response.data !== "") {
         const decoded = jwtDecode<AccessToken>(response.data.accessToken);
-        await dispatch(setUser_id(response.data.user_id));
-        await dispatch(setAccessToken(response.data.accessToken));
-        await dispatch(setExpirationTime(decoded.exp));
-        await dispatch(setUsername(response.data.username));
-        // navigate("/home");
+        dispatch(setUser_id(response.data.user_id));
+        dispatch(setAccessToken(response.data.accessToken));
+        dispatch(setExpirationTime(decoded.exp));
+        dispatch(setUsername(response.data.username));
       } else {
-        return
+        return;
       }
     } else return;
   };

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export const Welcome = () => {
   let navigate = useNavigate();
+
   return (
     <>
       <Header

@@ -1,12 +1,52 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+import { setReset } from "../../../redux-toolkit/features/user/user-slice";
+import { useDispatch, useSelector } from "react-redux";
+import { StoreState } from "../../../redux-toolkit/store";
+
 import { Button, ListItemText } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+
+import { apiUrl } from "../../../utils/config/api";
 import "./HomeHeadaer.css";
 
 export const HomeHeader = () => {
+  const { accessToken, username, points, games, scoreboard_place } = useSelector(
+    (store: StoreState) => store.user
+  );
+  let navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const logout = async () => {
+    await axios({
+      method: "DELETE",
+      url: `${apiUrl}/login`,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      withCredentials: true,
+      responseType: "json",
+    })
+      .then(async function (response: any) {
+        if (response.name === "AxiosError") {
+          console.log(response);
+        } else {
+          await dispatch(setReset());
+          navigate("/");
+        }
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="home-layout__header">
       <div className="home-layout__header__menu">
@@ -24,7 +64,7 @@ export const HomeHeader = () => {
                 {...bindTrigger(popupState)}
               >
                 <img src="./images/avatar.png" alt="Logo" />
-                Misiaczek
+                {username}
                 <KeyboardArrowDownIcon className="home-layout__header__menu__button__icon" />
               </Button>
               <Menu {...bindMenu(popupState)}>
@@ -33,7 +73,10 @@ export const HomeHeader = () => {
                   dense={true}
                   onClick={popupState.close}
                 >
-                  <ListItemText style={{ textAlign: "center" }}>
+                  <ListItemText
+                    style={{ textAlign: "center" }}
+                    onClick={() => logout()}
+                  >
                     <span className="home-layout__header__menu__span">
                       Logout
                     </span>
@@ -46,13 +89,13 @@ export const HomeHeader = () => {
       </div>
       <div className="home-layout__header__info">
         <p>
-          Points: <span>155</span>
+          Points: <span>{points}</span>
         </p>
         <p>
-          Number of games: <span>6</span>
+          Number of games: <span>{games}</span>
         </p>
         <p>
-          Ranking place: <span>24</span>
+          Ranking place: <span>{scoreboard_place}</span>
         </p>
       </div>
     </div>
