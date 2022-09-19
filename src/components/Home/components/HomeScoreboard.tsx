@@ -37,7 +37,6 @@ const columns: GridColDef[] = [
 
 export const HomeScoreboard = () => {
   const { scoreboard } = useSelector((store: StoreState) => store.user);
-
   return (
     <div className="home-layout__scoreboard">
       <h1>Scoreboard</h1>

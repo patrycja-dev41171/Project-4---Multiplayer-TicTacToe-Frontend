@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import axios, { AxiosResponse } from "axios";
 import { Button, IconButton, InputAdornment, Link } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import { signUpSchema } from "../../validations/signUpSchema";
 import { StyledTextField } from "../common/StyledTextField";
@@ -10,8 +12,6 @@ import { apiUrl } from "../../utils/config/api";
 import { User } from "types";
 
 import "../common/styles/form.css";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 interface InputNumber {
   password: string;
@@ -73,12 +73,16 @@ export const SignUpForm = () => {
       withCredentials: true,
       responseType: "json",
     })
-      .catch(function (error) {
-        setError(error.response.data.message);
-        setDisable(!disable);
+      .then(async function (response: AxiosResponse) {
+        if (response.request.status === 400) {
+          setError(JSON.parse(response.request.response).message);
+          setDisable(!disable);
+        } else {
+          navigate("/login");
+        }
       })
-      .then(function (response: any) {
-        if (response.data) navigate("/login");
+      .catch(function (err) {
+        console.log(err);
       });
   };
 

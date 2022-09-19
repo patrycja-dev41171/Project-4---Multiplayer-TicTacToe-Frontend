@@ -1,13 +1,13 @@
 import React from "react";
-import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import "./HomeBtns.css";
-import axios from "axios";
-import { apiUrl } from "../../../utils/config/api";
-import { setRoom_id } from "../../../redux-toolkit/features/user/user-slice";
-import { socket } from "../../../socket-io/socket";
+import axios, { AxiosResponse } from "axios";
+import { Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
+import { setRoom_id } from "../../../redux-toolkit/features/user/user-slice";
 import { StoreState } from "../../../redux-toolkit/store";
+import { apiUrl } from "../../../utils/config/api";
+import { socket } from "../../../socket-io/socket";
+import "./HomeBtns.css";
 
 export const HomeBtns = () => {
   const { user_id, accessToken } = useSelector(
@@ -28,9 +28,9 @@ export const HomeBtns = () => {
       withCredentials: true,
       responseType: "json",
     })
-      .then(async function (response: any) {
-        if (response.name === "AxiosError") {
-          console.log(response.response.data.message);
+      .then(async function (response: AxiosResponse) {
+        if (response.request.status === 400) {
+          console.log(JSON.parse(response.request.response).message);
         } else {
           dispatch(setRoom_id(response.data.room_id));
           socket.emit("join_room", response.data.room_id);

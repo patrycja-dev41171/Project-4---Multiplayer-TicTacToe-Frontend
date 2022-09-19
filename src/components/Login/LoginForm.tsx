@@ -3,8 +3,7 @@ import jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
-import axios from "axios";
-
+import axios, { AxiosResponse } from "axios";
 import { Button, IconButton, InputAdornment, Link } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { StyledTextField } from "../common/StyledTextField";
@@ -17,7 +16,6 @@ import {
   setUser_id,
   setUsername,
 } from "../../redux-toolkit/features/user/user-slice";
-
 import { Login } from "types";
 import "../common/styles/form.css";
 
@@ -77,9 +75,9 @@ export const LoginForm = () => {
       },
       withCredentials: true,
       responseType: "json",
-    }).then(async function (response: any) {
-      if (response.name === "AxiosError") {
-        setError(response.response.data.message);
+    }).then(async function (response: AxiosResponse) {
+      if (response.request.status === 400) {
+        setError(JSON.parse(response.request.response).message);
         setDisable(!disable);
       } else {
         const decoded = await jwtDecode<AccessToken>(response.data.accessToken);
