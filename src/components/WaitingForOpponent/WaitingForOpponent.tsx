@@ -11,7 +11,7 @@ export const WaitingForOpponent = () => {
   const { room_id } = useSelector((store: StoreState) => store.user);
   let navigate = useNavigate();
 
-  socket.on("player_join", (data: any) => {
+  socket.on("player_join", () => {
     navigate("/game");
   });
 

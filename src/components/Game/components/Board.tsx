@@ -8,6 +8,7 @@ import { BoardHeader } from "./BoardHeader";
 import { useNavigate } from "react-router-dom";
 import { setRoom_id } from "../../../redux-toolkit/features/user/user-slice";
 import { BoardBtns } from "./BoardBtns";
+import { GameMove, GameResults } from "types";
 
 export const Board = () => {
   const { room_id } = useSelector((store: StoreState) => store.user);
@@ -117,7 +118,7 @@ export const Board = () => {
       result: result,
       room: room_id,
       game_points: points,
-    });
+    } as GameResults);
   }, [sendResult]);
 
   useEffect(() => {
@@ -126,14 +127,14 @@ export const Board = () => {
       room: room_id,
       player: player,
       game_points: points,
-    });
+    } as GameMove);
   }, [gameMove]);
 
   useEffect(() => {
     checkWin();
   }, [render]);
 
-  socket.on("other_user_move", (data: any) => {
+  socket.on("other_user_move", (data: GameMove) => {
     const currentPlayer = data.player === "X" ? "O" : "X";
     setPlayer(currentPlayer);
     setTurn(currentPlayer);
@@ -142,7 +143,7 @@ export const Board = () => {
     setRender(!render);
   });
 
-  socket.on("game-results", (data: any) => {
+  socket.on("game-results", (data: GameResults) => {
     setResult(data.result);
     setPoints(data.game_points);
     if (data.result.state !== "none") {
@@ -153,7 +154,7 @@ export const Board = () => {
     }
   });
 
-  socket.on("user-disconnect", (data: any) => {
+  socket.on("user-disconnect", () => {
     setRoom_id("");
     navigate("/home");
   });
