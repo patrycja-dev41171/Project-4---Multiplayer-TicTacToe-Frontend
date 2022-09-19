@@ -1,42 +1,54 @@
 import React, { useEffect, useState } from "react";
 import { winningPatterns } from "../../../utils/game/winningPaterns";
-import { Button } from "@mui/material";
+import { socket } from "../../../socket-io/socket";
+import { useSelector } from "react-redux";
+import { StoreState } from "../../../redux-toolkit/store";
 import "./Board.css";
+import { BoardHeader } from "./BoardHeader";
+import { useNavigate } from "react-router-dom";
+import { setRoom_id } from "../../../redux-toolkit/features/user/user-slice";
+import { BoardBtns } from "./BoardBtns";
 
 export const Board = () => {
-  const [board, setBoard] = useState(["", "", "", "", "", "", "", "", "", ""]);
-  const [render, setRender] = useState(false);
-  const [player, setPlayer] = useState("X");
-  const [turn, setTurn] = useState("X");
+  const { room_id } = useSelector((store: StoreState) => store.user);
+  const [gameMove, setGameMove] = useState(false);
+  const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
+  const [player, setPlayer] = useState("O");
+  const [turn, setTurn] = useState("O");
   const [result, setResult] = useState({ winner: "none", state: "none" });
+  const [sendResult, setSendResult] = useState(false);
+  const [render, setRender] = useState(false);
+  const [points, setPoints] = useState({
+    playerX: 0,
+    playerO: 0,
+  });
+  const [btn, setBtn] = useState({
+    btn1: true,
+    btn2: false,
+  });
+  let navigate = useNavigate();
 
   const chooseSquare = async (square: number) => {
-    if (player === turn && board[square] === "") {
-      setTurn(player === "X" ? "O" : "X");
-      setPlayer(player === "X" ? "O" : "X");
-      const values = board;
-      values[square] = player;
-      await setBoard(values);
-      setRender(!render);
-    }
-  };
-
-  const checkWin = () => {
-    winningPatterns.forEach((currPattern) => {
-      const firstPlayer = board[currPattern[0]];
-      if (firstPlayer === "") return;
-      let foundWinningPattern = true;
-      currPattern.forEach((idx) => {
-        if (board[idx] !== firstPlayer) {
-          foundWinningPattern = false;
+    if (result.state === "none") {
+      if (player === turn && board[square] === "") {
+        setTurn(player === "X" ? "O" : "X");
+        const values = board;
+        values[square] = player;
+        setBoard(values);
+        if (player === "X") {
+          setPoints({
+            ...points,
+            playerX: points.playerX + 10,
+          });
+        } else {
+          setPoints({
+            ...points,
+            playerO: points.playerO + 10,
+          });
         }
-      });
-
-      if (foundWinningPattern) {
-        setResult({ winner: board[currPattern[0]], state: "won" });
-        console.log(result.winner);
+        setGameMove(!gameMove);
       }
-    });
+    }
   };
 
   const checkIfTie = () => {
@@ -48,25 +60,108 @@ export const Board = () => {
     });
 
     if (filled) {
+      setPoints({
+        playerX: points.playerX + 25,
+        playerO: points.playerO + 25,
+      });
       setResult({ winner: "none", state: "tie" });
+      setSendResult(!sendResult);
+    }
+  };
+
+  const checkWin = () => {
+    let win = false;
+    winningPatterns.forEach((currPattern) => {
+      const firstPlayer = board[currPattern[0]];
+      if (firstPlayer === "") return;
+      let foundWinningPattern = true;
+      currPattern.forEach((idx) => {
+        if (board[idx] !== firstPlayer) {
+          foundWinningPattern = false;
+        }
+      });
+      if (foundWinningPattern) {
+        win = true;
+        if (firstPlayer === "X") {
+          setPoints({
+            ...points,
+            playerX: points.playerX + 40,
+          });
+        } else {
+          setPoints({
+            ...points,
+            playerO: points.playerO + 40,
+          });
+        }
+        setResult({ winner: firstPlayer, state: "won" });
+        setBtn({
+          btn1: !btn.btn1,
+          btn2: !btn.btn2,
+        });
+        setSendResult(!sendResult);
+      }
+    });
+    if (!win) {
+      checkIfTie();
     }
   };
 
   useEffect(() => {
+    if (room_id === "") {
+      navigate("/home");
+    }
+  }, []);
+
+  useEffect(() => {
+    socket.emit("game-results", {
+      result: result,
+      room: room_id,
+      game_points: points,
+    });
+  }, [sendResult]);
+
+  useEffect(() => {
+    socket.emit("game-move", {
+      board: board,
+      room: room_id,
+      player: player,
+      game_points: points,
+    });
+  }, [gameMove]);
+
+  useEffect(() => {
     checkWin();
-    checkIfTie();
   }, [render]);
+
+  socket.on("other_user_move", (data: any) => {
+    const currentPlayer = data.player === "X" ? "O" : "X";
+    setPlayer(currentPlayer);
+    setTurn(currentPlayer);
+    setBoard(data.board);
+    setPoints(data.game_points);
+    setRender(!render);
+  });
+
+  socket.on("game-results", (data: any) => {
+    setResult(data.result);
+    setPoints(data.game_points);
+    if (data.result.state !== "none") {
+      setBtn({
+        btn1: !btn.btn1,
+        btn2: !btn.btn2,
+      });
+    }
+  });
+
+  socket.on("user-disconnect", (data: any) => {
+    setRoom_id("");
+    navigate("/home");
+  });
 
   return (
     <div className="board__layout">
-      <h1 className="board__h1">TIC TAC TOE</h1>
-      <h2 className="board__h2">Game status: in progress.</h2>
-      <div className="board__info">
-        <p>Opponent: </p>
-        <p>POINTS</p>
-        <p>Player1: 200</p>
-        <p>Player2: 140</p>
-      </div>
+      <BoardHeader playerX={points.playerX} playerO={points.playerO} />
+
       <div className="board">
         <div id="0" className="board__element" onClick={() => chooseSquare(0)}>
           <p>{board[0]}</p>
@@ -96,15 +191,21 @@ export const Board = () => {
           {board[8]}
         </div>
       </div>
-      <p className="board__turn">Your move!</p>
-      <div className="board__btns">
-        <Button disabled type="submit" variant="contained" size="medium">
-          Save the result
-        </Button>
-        <Button type="submit" variant="contained" size="medium">
-          End the game
-        </Button>
-      </div>
+
+      {result.state === "none" ? (
+        <p className="board__turn">{player === turn ? "Your move!" : ""}</p>
+      ) : (
+        <p className="board__turn">Winner: {result.winner}</p>
+      )}
+      {result.state === "tie" ? <p className="board__turn">TIE</p> : null}
+
+      <BoardBtns
+        btn1="Save the result"
+        btn2="End the game"
+        btn={btn}
+        points={points}
+        player={player}
+      />
     </div>
   );
 };

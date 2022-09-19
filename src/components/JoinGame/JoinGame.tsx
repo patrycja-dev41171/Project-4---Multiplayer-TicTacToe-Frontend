@@ -11,7 +11,7 @@ import { StoreState } from "../../redux-toolkit/store";
 import { apiUrl } from "../../utils/config/api";
 import { socket } from "../../socket-io/socket";
 import { setRoom_id } from "../../redux-toolkit/features/user/user-slice";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import "./JoinGame.css";
 
 type Code = {
@@ -51,9 +51,9 @@ export const JoinGame = () => {
       withCredentials: true,
       responseType: "json",
     })
-      .then(async function (response: any) {
-        if (response.name === "AxiosError") {
-          setError(response.response.data.message);
+      .then(async function (response: AxiosResponse) {
+        if (response.request.status === 400) {
+          setError(JSON.parse(response.request.response).message);
           setDisable(!disable);
         } else {
           dispatch(setRoom_id(response.data.room_id));
@@ -78,9 +78,9 @@ export const JoinGame = () => {
       data: data,
       withCredentials: true,
       responseType: "json",
-    }).then(async function (response: any) {
-      if (response.name === "AxiosError") {
-        setError(response.response.data.message);
+    }).then(async function (response: AxiosResponse) {
+      if (response.request.status === 400) {
+        setError(JSON.parse(response.request.response).message);
         setDisable(!disable);
       } else {
         dispatch(setRoom_id(response.data.room_id));

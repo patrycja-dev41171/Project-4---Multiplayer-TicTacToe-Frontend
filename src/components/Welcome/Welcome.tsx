@@ -1,7 +1,7 @@
 import React from "react";
-import { Header } from "../common/Header/Header";
-import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
+import { Header } from "../common/Header/Header";
 
 export const Welcome = () => {
   let navigate = useNavigate();

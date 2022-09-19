@@ -1,24 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-
+import axios, { AxiosResponse } from "axios";
 import { setReset } from "../../../redux-toolkit/features/user/user-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { StoreState } from "../../../redux-toolkit/store";
-
 import { Button, ListItemText } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-
 import { apiUrl } from "../../../utils/config/api";
 import "./HomeHeadaer.css";
 
 export const HomeHeader = () => {
-  const { accessToken, username, points, games, scoreboard_place } = useSelector(
-    (store: StoreState) => store.user
-  );
+  const { accessToken, username, points, games, scoreboard_place } =
+    useSelector((store: StoreState) => store.user);
   let navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -34,9 +30,9 @@ export const HomeHeader = () => {
       withCredentials: true,
       responseType: "json",
     })
-      .then(async function (response: any) {
-        if (response.name === "AxiosError") {
-          console.log(response);
+      .then(async function (response: AxiosResponse) {
+        if (response.request.status === 400) {
+          console.log(JSON.parse(response.request.response).message);
         } else {
           await dispatch(setReset());
           navigate("/");
