@@ -1,0 +1,35 @@
+.disable {
+    display: none;
+}
+
+.form {
+    width: 80%;
+    max-width: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.form__p {
+    margin: 20px auto;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form__p--error {
+    margin: 0 auto;
+    color: #ce1818;
+}
+
+@media screen and (min-height: 1024px) and (min-width: 768px) and (orientation: portrait) {
+    .form__p {
+        font-size: 16px;
+    }
+}
+
+@media screen and (min-width: 1024px) and (min-height: 768px) and (orientation: landscape) {
+    .form__p {
+        font-size: 16px;
+    }
+}

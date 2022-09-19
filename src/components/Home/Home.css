@@ -1,0 +1,26 @@
+.home-layout {
+  height: 100%;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 30px 10px 10px;
+}
+
+@media screen and (min-height: 1024px) and (min-width: 768px) and (orientation: portrait) {
+  .home-layout {
+    padding: 30px 20px 10px;
+  }
+}
+
+@media screen and (min-height: 750px) and (min-width: 1024px) and (orientation: landscape) {
+  .home-layout {
+    box-sizing: border-box;
+    width: 994px;
+    height: 710px;
+    margin: 20px auto auto auto;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    overflow-x: hidden;
+  }
+}
