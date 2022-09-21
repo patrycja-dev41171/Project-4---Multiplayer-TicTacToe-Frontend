@@ -1,10 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import axios, { AxiosResponse } from "axios";
-import { Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setRoom_id } from "../../../redux-toolkit/features/user/user-slice";
 import { StoreState } from "../../../redux-toolkit/store";
+import axios, { AxiosResponse } from "axios";
+import { Button } from "@mui/material";
 import { apiUrl } from "../../../utils/config/api";
 import { socket } from "../../../socket-io/socket";
 import "./HomeBtns.css";
@@ -33,7 +33,7 @@ export const HomeBtns = () => {
           console.log(JSON.parse(response.request.response).message);
         } else {
           dispatch(setRoom_id(response.data.room_id));
-          socket.emit("join_room", response.data.room_id);
+            socket.emit("join_room", response.data.room_id);
           if (response.data.startGame === true) {
             navigate("/game");
           } else {

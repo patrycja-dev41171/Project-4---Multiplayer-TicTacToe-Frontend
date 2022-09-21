@@ -7,7 +7,7 @@ export const loginSchema = yup
             .string()
             .email("Invalid email.")
             .required("Enter email.")
-            .max(255, "Username should be at least 3 characters long."),
+            .max(255, "Email should not have more than 255 characters."),
         password: yup
             .string()
             .min(8, "Password should be at least 8 characters long.")

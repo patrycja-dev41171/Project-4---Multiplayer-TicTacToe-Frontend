@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { winningPatterns } from "../../../utils/game/winningPaterns";
-import { socket } from "../../../socket-io/socket";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { StoreState } from "../../../redux-toolkit/store";
-import "./Board.css";
-import { BoardHeader } from "./BoardHeader";
-import { useNavigate } from "react-router-dom";
 import { setRoom_id } from "../../../redux-toolkit/features/user/user-slice";
+import { BoardHeader } from "./BoardHeader";
 import { BoardBtns } from "./BoardBtns";
+import {socket} from "../../../socket-io/socket";
+import { winningPatterns } from "../../../utils/game/winningPaterns";
 import { GameMove, GameResults } from "types";
+import "./Board.css";
 
 export const Board = () => {
   const { room_id } = useSelector((store: StoreState) => store.user);

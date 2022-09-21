@@ -29,12 +29,13 @@
 }
 
 @media screen and (min-height: 750px) and (min-width: 1024px) and (orientation: landscape) {
+
   .home-layout__scoreboard {
     grid-area: 2 / 3 / 5 / 5;
-    padding-left: 50px;
+    padding-left: 80px;
   }
   .home-layout__scoreboard > h1 {
-    padding: 20px 10px 20px 0;
+    padding: 40px 10px 20px 0;
     font-size: 24px;
   }
 }

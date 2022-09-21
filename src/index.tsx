@@ -5,7 +5,6 @@ import { ThemeProvider } from "@mui/material/styles";
 import { mainTheme } from "./utils/materialUITheme";
 import { Provider } from "react-redux";
 import { store } from "./redux-toolkit/store";
-import "./socket-io/socket";
 import { App } from "./App";
 import "./index.css";
 

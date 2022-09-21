@@ -1,17 +1,18 @@
 import React, { useState } from "react";
-import { Header } from "../common/Header/Header";
-import { Button } from "@mui/material";
-import { StyledTextField } from "../common/StyledTextField";
 import { useNavigate } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import { codeRoomSchema } from "../../validations/codeRoomSchema";
+import axios, { AxiosResponse } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { StoreState } from "../../redux-toolkit/store";
+import { setRoom_id } from "../../redux-toolkit/features/user/user-slice";
+import { Button } from "@mui/material";
+import { Header } from "../common/Header/Header";
+import { StyledTextField } from "../common/StyledTextField";
 import { apiUrl } from "../../utils/config/api";
 import { socket } from "../../socket-io/socket";
-import { setRoom_id } from "../../redux-toolkit/features/user/user-slice";
-import axios, { AxiosResponse } from "axios";
+
 import "./JoinGame.css";
 
 type Code = {

@@ -1,17 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import LinearProgress from "@mui/material/LinearProgress";
-import { Header } from "../common/Header/Header";
 import { useSelector } from "react-redux";
 import { StoreState } from "../../redux-toolkit/store";
-import { socket } from "../../socket-io/socket";
+import { Header } from "../common/Header/Header";
+import LinearProgress from "@mui/material/LinearProgress";
+import {socket} from "../../socket-io/socket";
 import "./WaitingForOpponent.css";
 
 export const WaitingForOpponent = () => {
   const { room_id } = useSelector((store: StoreState) => store.user);
   let navigate = useNavigate();
 
-  socket.on("player_join", () => {
+  socket.on("player_join", (data:any) => {
     navigate("/game");
   });
 
